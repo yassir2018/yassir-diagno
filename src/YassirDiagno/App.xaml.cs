@@ -154,6 +154,7 @@ public partial class App : Application
         services.AddSingleton<IStressTestService, StressTestService>();
         services.AddSingleton<IReportService, ReportService>();
         services.AddSingleton<IProcessExplorerService, ProcessExplorerService>();
+        services.AddSingleton<IComponentHealthService, ComponentHealthService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();
@@ -162,6 +163,7 @@ public partial class App : Application
         services.AddSingleton<HardwarePageViewModel>();
         services.AddSingleton<PerformancePageViewModel>();
         services.AddSingleton<ProcessesPageViewModel>();
+        services.AddSingleton<EtatPageViewModel>();
         services.AddSingleton<ToolsPageViewModel>();
         services.AddSingleton<ReportsPageViewModel>();
         services.AddSingleton<SettingsPageViewModel>();

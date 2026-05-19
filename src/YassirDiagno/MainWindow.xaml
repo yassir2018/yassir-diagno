@@ -69,6 +69,8 @@
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav" IsChecked="True"
                                  Command="{Binding NavigateCommand}" CommandParameter="Dashboard" Content="🏠  Accueil"/>
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Etat" Content="🩺  État du PC"/>
+                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
                                  Command="{Binding NavigateCommand}" CommandParameter="System" Content="💻  Système"/>
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
                                  Command="{Binding NavigateCommand}" CommandParameter="Hardware" Content="🔧  Matériel"/>

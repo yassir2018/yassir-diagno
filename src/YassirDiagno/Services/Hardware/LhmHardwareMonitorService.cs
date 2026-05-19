@@ -43,7 +43,9 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
 
         double? cpuSilicon = null, cpuPower = null, ssd = null,
                 gpuLoad = null, battLevel = null, battHealth = null,
-                cpuTotalLoad = null, cpuAvgClock = null;
+                cpuTotalLoad = null, cpuAvgClock = null,
+                ssdLife = null, ssdSpare = null,
+                gpuMemUsed = null, gpuMemTotal = null;
         string? battStatus = null;
         var coreLoads = new Dictionary<int, double>();
         var coreClocks = new Dictionary<int, double>();
@@ -102,6 +104,14 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
                         {
                             if (gpuLoad is null || s.Value > gpuLoad) gpuLoad = s.Value;
                         }
+                        else if (s.SensorType == LhmSensorType.SmallData && s.Name == "GPU Memory Used")
+                        {
+                            gpuMemUsed = s.Value;
+                        }
+                        else if (s.SensorType == LhmSensorType.SmallData && s.Name == "GPU Memory Total")
+                        {
+                            gpuMemTotal = s.Value;
+                        }
                     }
                     break;
 
@@ -111,6 +121,10 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
                         if (s.Value is null) continue;
                         if (s.SensorType == LhmSensorType.Temperature && s.Name.Contains("Composite"))
                             ssd = s.Value;
+                        else if (s.SensorType == LhmSensorType.Level && s.Name == "Life")
+                            ssdLife = s.Value;
+                        else if (s.SensorType == LhmSensorType.Level && s.Name == "Available Spare")
+                            ssdSpare = s.Value;
                     }
                     break;
 
@@ -154,11 +168,62 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
             coreClocks.TryGetValue(i, out var c) ? c : null
         )).ToArray();
 
+        double? ramTotal = null, ramUsed = null, ramPct = null;
+        try
+        {
+            var memStatus = new MEMORYSTATUSEX();
+            memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf<MEMORYSTATUSEX>();
+            if (GlobalMemoryStatusEx(ref memStatus))
+            {
+                ramTotal = memStatus.ullTotalPhys / 1024.0 / 1024.0 / 1024.0;
+                var ramFree = memStatus.ullAvailPhys / 1024.0 / 1024.0 / 1024.0;
+                ramUsed = ramTotal - ramFree;
+                ramPct = memStatus.dwMemoryLoad;
+            }
+        }
+        catch { }
+
+        double? diskTotal = null, diskFree = null, diskFreePct = null;
+        try
+        {
+            var sysDrive = System.IO.Path.GetPathRoot(Environment.SystemDirectory) ?? "C:\\";
+            var info = new System.IO.DriveInfo(sysDrive);
+            if (info.IsReady)
+            {
+                diskTotal = info.TotalSize / 1024.0 / 1024.0 / 1024.0;
+                diskFree = info.AvailableFreeSpace / 1024.0 / 1024.0 / 1024.0;
+                diskFreePct = (double)info.AvailableFreeSpace / info.TotalSize * 100;
+            }
+        }
+        catch { }
+
         return new HardwareSnapshot(
             DateTime.Now, cpuSilicon, cpuPower, cpuZone, gpuZone, gpuLoad, ssd, extZone,
             battLevel, battHealth, battStatus, score, label,
-            cpuTotalLoad, cpuAvgClock, cores);
+            cpuTotalLoad, cpuAvgClock, cores,
+            ramPct, ramTotal, ramUsed,
+            diskFree, diskTotal, diskFreePct,
+            ssdLife, ssdSpare,
+            gpuMemUsed, gpuMemTotal);
     }
+
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+    private struct MEMORYSTATUSEX
+    {
+        public uint dwLength;
+        public uint dwMemoryLoad;
+        public ulong ullTotalPhys;
+        public ulong ullAvailPhys;
+        public ulong ullTotalPageFile;
+        public ulong ullAvailPageFile;
+        public ulong ullTotalVirtual;
+        public ulong ullAvailVirtual;
+        public ulong ullAvailExtendedVirtual;
+    }
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+    [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+    private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     private static bool TryExtractIndex(string name, out int index)
     {

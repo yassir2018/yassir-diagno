@@ -18,7 +18,17 @@ public record HardwareSnapshot(
     string GlobalHealthLabel,
     double? CpuTotalLoad = null,
     double? CpuAverageClock = null,
-    IReadOnlyList<CpuCoreInfo>? Cores = null)
+    IReadOnlyList<CpuCoreInfo>? Cores = null,
+    double? RamUsagePercent = null,
+    double? RamTotalGB = null,
+    double? RamUsedGB = null,
+    double? DiskFreeGB = null,
+    double? DiskTotalGB = null,
+    double? DiskFreePercent = null,
+    double? SsdLifeRemaining = null,
+    double? SsdAvailableSpare = null,
+    double? GpuMemoryUsedMB = null,
+    double? GpuMemoryTotalMB = null)
 {
     public static HardwareSnapshot Empty() => new(
         DateTime.Now, null, null, null, null, null, null, null, null, null, null, 100, "BON");
