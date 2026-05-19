@@ -1,0 +1,93 @@
+<UserControl x:Class="YassirDiagno.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Background="{DynamicResource WindowBackgroundBrush}">
+
+    <Grid Margin="24,18,24,18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="TABLEAU DE BORD" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+            <TextBlock Text="Vue d'ensemble de l'état de votre système" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
+        </StackPanel>
+
+        <UniformGrid Grid.Row="1" Columns="3" Rows="2" Margin="-6,-6,-6,-6">
+            <Border Style="{StaticResource CardStyle}" Margin="6">
+                <StackPanel>
+                    <TextBlock Text="CPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding Snapshot.CpuSilicon, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
+                    </StackPanel>
+                    <TextBlock Text="Température silicon" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="6">
+                <StackPanel>
+                    <TextBlock Text="GPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding Snapshot.GpuZone, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
+                    </StackPanel>
+                    <TextBlock Text="Température zone" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="6">
+                <StackPanel>
+                    <TextBlock Text="Puissance CPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding Snapshot.CpuPower, StringFormat={}{0:F1}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="W" Style="{StaticResource UnitStyle}"/>
+                    </StackPanel>
+                    <TextBlock Text="Consommation" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="6">
+                <StackPanel>
+                    <TextBlock Text="SSD" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding Snapshot.Ssd, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
+                    </StackPanel>
+                    <TextBlock Text="Température" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="6">
+                <StackPanel>
+                    <TextBlock Text="Batterie" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding Snapshot.BatteryLevel, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="%" Style="{StaticResource UnitStyle}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Snapshot.BatteryStatus, FallbackValue=--}" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="6" Background="{DynamicResource AccentBlueBrush}">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Santé globale" FontSize="11" Foreground="White" Opacity="0.85"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBlock Text="{Binding Snapshot.GlobalHealthScore, FallbackValue=--}" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="%" FontSize="14" Foreground="White" Margin="2,8,0,0" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Snapshot.GlobalHealthLabel, FallbackValue=--}" FontSize="11" FontWeight="SemiBold" Foreground="White" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <TextBlock Grid.Row="2" Text="{Binding LastUpdate, StringFormat='Dernière mise à jour: {0}'}"
+                   Style="{StaticResource LabelStyle}" FontSize="10"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,12,0,0"/>
+    </Grid>
+</UserControl>
