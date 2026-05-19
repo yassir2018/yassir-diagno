@@ -12,82 +12,157 @@
         MinHeight="600" MinWidth="900"
         Background="{DynamicResource WindowBackgroundBrush}"
         FontFamily="{DynamicResource AppFontFamily}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="False">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="38" ResizeBorderThickness="6" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="38"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Background="{DynamicResource SidebarBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
-            <DockPanel>
-                <Border DockPanel.Dock="Top" Padding="16,18,16,18" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
-                    <StackPanel Orientation="Horizontal">
-                        <Canvas Width="32" Height="32">
-                            <Rectangle Width="32" Height="32" RadiusX="8" RadiusY="8">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#1E1E2E" Offset="0"/>
-                                        <GradientStop Color="#2D2D44" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <Path Data="M 10 8 L 16 15 L 22 8" StrokeThickness="3"
-                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
-                                <Path.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#10B981" Offset="0"/>
-                                        <GradientStop Color="#3B82F6" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Path.Stroke>
-                            </Path>
-                            <Line X1="16" Y1="15" X2="16" Y2="24" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Color="#10B981" Offset="0"/>
-                                        <GradientStop Color="#3B82F6" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Canvas>
-                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="YASSIR DIAGNO" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
-                            <TextBlock Text="Diagnostic · Scan · PC Monitor" FontSize="9" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,1,0,0"/>
+        <Grid Grid.Row="0" Background="{DynamicResource SurfaceBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,0,0">
+                <Canvas Width="20" Height="20" Margin="0,0,10,0">
+                    <Rectangle Width="20" Height="20" RadiusX="5" RadiusY="5">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#1E1E2E" Offset="0"/>
+                                <GradientStop Color="#2D2D44" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Path Data="M 6.5 5 L 10 9.5 L 13.5 5" StrokeThickness="2"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
+                        <Path.Stroke>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#10B981" Offset="0"/>
+                                <GradientStop Color="#3B82F6" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Path.Stroke>
+                    </Path>
+                    <Line X1="10" Y1="9.5" X2="10" Y2="15.5" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Line.Stroke>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#10B981" Offset="0"/>
+                                <GradientStop Color="#3B82F6" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Line.Stroke>
+                    </Line>
+                </Canvas>
+                <TextBlock Text="Yassir Diagno" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                <Border Background="{DynamicResource AccentBlueLightBrush}" CornerRadius="3" Padding="6,1" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="v1.0.0" FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource AccentBlueBrush}"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
+                <Button x:Name="MinBtn" Style="{StaticResource TitleBarButtonStyle}" Content="&#xE921;" ToolTip="Minimiser" Click="OnMinimize"/>
+                <Button x:Name="MaxBtn" Style="{StaticResource TitleBarButtonStyle}" Content="&#xE922;" ToolTip="Agrandir" Click="OnMaximize"/>
+                <Button x:Name="CloseBtn" Style="{StaticResource TitleBarCloseButtonStyle}" Content="&#xE8BB;" ToolTip="Fermer" Click="OnClose"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="{DynamicResource SidebarBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" Padding="16,18,16,18" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal">
+                            <Canvas Width="32" Height="32">
+                                <Rectangle Width="32" Height="32" RadiusX="8" RadiusY="8">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#1E1E2E" Offset="0"/>
+                                            <GradientStop Color="#2D2D44" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Path Data="M 10 8 L 16 15 L 22 8" StrokeThickness="3"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
+                                    <Path.Stroke>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#10B981" Offset="0"/>
+                                            <GradientStop Color="#3B82F6" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Path.Stroke>
+                                </Path>
+                                <Line X1="16" Y1="15" X2="16" Y2="24" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                                    <Line.Stroke>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#10B981" Offset="0"/>
+                                            <GradientStop Color="#3B82F6" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Line.Stroke>
+                                </Line>
+                            </Canvas>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="YASSIR DIAGNO" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                <TextBlock Text="Diagnostic · Scan · PC Monitor" FontSize="9" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,1,0,0"/>
+                            </StackPanel>
                         </StackPanel>
+                    </Border>
+
+                    <Border DockPanel.Dock="Bottom" Padding="16,12,16,16" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentGreenBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="v1.0.0" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Margin="0,12,0,0">
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav" IsChecked="True"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Dashboard" Content="🏠  Accueil"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Etat" Content="🩺  État du PC"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="System" Content="💻  Système"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Hardware" Content="🔧  Matériel"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Performance" Content="📊  Performance"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Processes" Content="⚙  Processus"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Tools" Content="🛠  Outils"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Reports" Content="📄  Rapports"/>
+                        <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Settings" Content="⚙  Paramètres"/>
                     </StackPanel>
-                </Border>
+                </DockPanel>
+            </Border>
 
-                <Border DockPanel.Dock="Bottom" Padding="16,12,16,16" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentGreenBrush}" VerticalAlignment="Center"/>
-                        <TextBlock Text="v1.0.0" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-
-                <StackPanel Margin="0,12,0,0">
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav" IsChecked="True"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Dashboard" Content="🏠  Accueil"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Etat" Content="🩺  État du PC"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="System" Content="💻  Système"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Hardware" Content="🔧  Matériel"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Performance" Content="📊  Performance"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Processes" Content="⚙  Processus"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Tools" Content="🛠  Outils"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Reports" Content="📄  Rapports"/>
-                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Settings" Content="⚙  Paramètres"/>
-                </StackPanel>
-            </DockPanel>
-        </Border>
-
-        <ContentControl x:Name="ContentArea" Grid.Column="1" Content="{Binding CurrentViewModel}"/>
+            <ContentControl x:Name="ContentArea" Grid.Column="1" Content="{Binding CurrentViewModel}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+        </Grid>
     </Grid>
 </Window>

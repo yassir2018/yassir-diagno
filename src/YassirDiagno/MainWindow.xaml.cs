@@ -18,7 +18,19 @@ public partial class MainWindow : Window
             DataContext = vm;
             Loaded += async (_, _) => await vm.LoadAsync();
         }
+        StateChanged += OnStateChanged;
     }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        if (MaxBtn is not null)
+            MaxBtn.Content = WindowState == WindowState.Maximized ? "" : "";
+    }
+
+    private void OnMinimize(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    private void OnMaximize(object sender, RoutedEventArgs e)
+        => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    private void OnClose(object sender, RoutedEventArgs e) => Close();
 
     protected override void OnClosing(CancelEventArgs e)
     {
