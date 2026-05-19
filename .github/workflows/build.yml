@@ -1,0 +1,97 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [ main ]
+    tags:     [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/YassirDiagno/YassirDiagno.csproj
+
+      - name: Build (Release)
+        run: dotnet build src/YassirDiagno/YassirDiagno.csproj -c Release --no-restore
+
+      - name: Publish self-contained (win-x64)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          dotnet publish src/YassirDiagno/YassirDiagno.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishReadyToRun=true `
+            -o installer/publish
+
+      - name: Install WiX 5
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          $env:Path = "$env:USERPROFILE\.dotnet\tools;" + $env:Path
+          wix extension add -g WixToolset.UI.wixext/5.0.2
+
+      - name: Build MSI installer
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          $env:Path = "$env:USERPROFILE\.dotnet\tools;" + $env:Path
+          ./installer/Build-Installer.ps1
+        shell: pwsh
+
+      - name: Upload MSI artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: YassirDiagno-MSI
+          path: installer/out/*.msi
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/out/*.msi
+          generate_release_notes: true
+          name: "Yassir Diagno ${{ github.ref_name }}"
+          body: |
+            ## 🚀 Yassir Diagno ${{ github.ref_name }}
+
+            **Thermal & Hardware Monitor for Windows** — diagnostic complet pour ton PC.
+
+            ### 📥 Installation
+
+            1. Télécharger le `.msi` ci-dessous
+            2. Double-click pour installer (UAC requis)
+            3. Lancer depuis le menu Démarrer ou raccourci bureau
+
+            ### ✨ Inclus dans cette version
+
+            - 🩺 État du PC: 9 composants analysés (CPU, RAM, SSD, batterie, GPU, disque, Defender, réseau, événements thermiques)
+            - 📊 Performance: graphiques historiques 10 minutes
+            - 🔧 Matériel: inventaire complet + détail par cœur CPU
+            - ⚙ Processus: top consommateurs CPU/RAM avec kill
+            - 🛠 Outils: scan diagnostic + stress test CPU
+            - 📄 Rapports: export TXT/HTML
+            - 🌙 Light/Dark themes + 📌 system tray + 🔔 toast notifications
+
+            ### 🔧 Prérequis
+
+            - Windows 10 1809 ou ultérieur (Windows 11 recommandé)
+            - Droits administrateur (requis pour lecture capteurs hardware)
+            - 80 MB d'espace disque (installation self-contained, pas besoin de .NET)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
