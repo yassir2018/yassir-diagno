@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using H.NotifyIcon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using YassirDiagno.Services;
@@ -12,6 +13,7 @@ namespace YassirDiagno;
 public partial class App : Application
 {
     public static IHost? Host { get; private set; }
+    private TaskbarIcon? _trayIcon;
 
     private static readonly string LogPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -52,28 +54,35 @@ public partial class App : Application
             splash.SetProgress(20, "Démarrage du hôte d'application...");
             await Host.StartAsync();
 
-            splash.SetProgress(35, "Initialisation du driver hardware...");
+            splash.SetProgress(30, "Application du thème...");
+            _ = Host.Services.GetRequiredService<IThemeService>();
+
+            splash.SetProgress(45, "Initialisation du driver hardware...");
             var monitor = Host.Services.GetRequiredService<IHardwareMonitorService>();
             await monitor.InitializeAsync();
 
-            splash.SetProgress(55, "Démarrage du collecteur d'historique...");
+            splash.SetProgress(60, "Démarrage du collecteur d'historique...");
             _ = Host.Services.GetRequiredService<ISensorHistoryService>();
             monitor.StartPolling(TimeSpan.FromSeconds(1));
 
-            splash.SetProgress(75, "Détection des composants...");
-            await Task.Delay(150);
+            splash.SetProgress(75, "Démarrage du service de notifications...");
+            var notif = Host.Services.GetRequiredService<INotificationService>();
+            notif.Start();
 
-            splash.SetProgress(90, "Préparation du tableau de bord...");
+            splash.SetProgress(85, "Préparation du tableau de bord...");
             var main = Host.Services.GetRequiredService<MainWindow>();
-            await Task.Delay(150);
+
+            splash.SetProgress(95, "Configuration de la barre d'état...");
+            SetupTrayIcon(main);
 
             splash.SetProgress(100, "Prêt");
             await Task.Delay(200);
 
-            main.Show();
+            var settings = Host.Services.GetRequiredService<ISettingsService>();
+            if (!settings.Current.StartMinimized) main.Show();
             splash.Close();
 
-            WriteCrash("Startup", null, "MainWindow shown");
+            WriteCrash("Startup", null, "MainWindow ready");
 
             base.OnStartup(e);
         }
@@ -85,6 +94,51 @@ public partial class App : Application
         }
     }
 
+    private void SetupTrayIcon(MainWindow main)
+    {
+        _trayIcon = new TaskbarIcon
+        {
+            ToolTipText = "Yassir Diagno — Thermal Monitor",
+            Visibility = Visibility.Visible,
+            NoLeftClickDelay = true
+        };
+
+        try
+        {
+            var iconUri = new Uri("pack://application:,,,/YassirDiagno;component/Resources/Icons/tray.ico", UriKind.Absolute);
+            _trayIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
+        }
+        catch { }
+
+        var menu = new System.Windows.Controls.ContextMenu();
+
+        var showItem = new System.Windows.Controls.MenuItem { Header = "Afficher Yassir Diagno" };
+        showItem.Click += (_, _) =>
+        {
+            main.Show();
+            if (main.WindowState == WindowState.Minimized) main.WindowState = WindowState.Normal;
+            main.Activate();
+        };
+        menu.Items.Add(showItem);
+
+        menu.Items.Add(new System.Windows.Controls.Separator());
+
+        var exitItem = new System.Windows.Controls.MenuItem { Header = "Quitter" };
+        exitItem.Click += (_, _) =>
+        {
+            main.ForceClose = true;
+            Shutdown();
+        };
+        menu.Items.Add(exitItem);
+
+        _trayIcon.ContextMenu = menu;
+        _trayIcon.TrayLeftMouseDown += (_, _) =>
+        {
+            if (main.IsVisible) main.Hide();
+            else { main.Show(); main.Activate(); }
+        };
+    }
+
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IHardwareMonitorService, LhmHardwareMonitorService>();
@@ -92,6 +146,9 @@ public partial class App : Application
         services.AddSingleton<IHardwareInventoryService, HardwareInventoryService>();
         services.AddSingleton<ISensorHistoryService, SensorHistoryService>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IAutoStartService, AutoStartService>();
+        services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<IDiagnosticService, DiagnosticService>();
         services.AddSingleton<IStressTestService, StressTestService>();
         services.AddSingleton<IReportService, ReportService>();
@@ -111,6 +168,7 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
+        _trayIcon?.Dispose();
         if (Host is not null)
         {
             await Host.StopAsync();

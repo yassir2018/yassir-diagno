@@ -10,6 +10,9 @@ public sealed class AppSettings
     public bool StartWithWindows { get; set; } = false;
     public bool StartMinimized { get; set; } = false;
     public bool ShowSparklines { get; set; } = true;
+    public bool NotificationsEnabled { get; set; } = true;
+    public double CpuTempCriticalThreshold { get; set; } = 85.0;
+    public double SsdTempCriticalThreshold { get; set; } = 75.0;
 }
 
 public interface ISettingsService

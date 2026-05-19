@@ -9,6 +9,24 @@
 
             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
                 <StackPanel>
+                    <TextBlock Text="APPARENCE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
+
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Thème sombre" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold"/>
+                            <TextBlock Text="Bascule entre thème clair et sombre instantanément" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" IsChecked="{Binding IsDarkTheme}" VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                <StackPanel>
                     <TextBlock Text="MONITORING" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
 
                     <Grid Margin="0,0,0,14">
@@ -29,10 +47,17 @@
 
                     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,12"/>
 
-                    <CheckBox IsChecked="{Binding ShowSparklines}" Margin="0,0,0,4">
+                    <CheckBox IsChecked="{Binding ShowSparklines}" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="Afficher les mini-graphiques" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold"/>
                             <TextBlock Text="Sparklines historiques dans chaque carte du tableau de bord" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox IsChecked="{Binding NotificationsEnabled}">
+                        <StackPanel>
+                            <TextBlock Text="Notifications d'alerte" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold"/>
+                            <TextBlock Text="Recevoir un toast Windows quand CPU ≥ 85°C ou SSD ≥ 75°C" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
                         </StackPanel>
                     </CheckBox>
                 </StackPanel>

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using YassirDiagno.ViewModels;
@@ -6,6 +7,8 @@ namespace YassirDiagno;
 
 public partial class MainWindow : Window
 {
+    public bool ForceClose { get; set; }
+
     public MainWindow()
     {
         InitializeComponent();
@@ -15,5 +18,16 @@ public partial class MainWindow : Window
             DataContext = vm;
             Loaded += async (_, _) => await vm.LoadAsync();
         }
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        if (!ForceClose)
+        {
+            e.Cancel = true;
+            Hide();
+            return;
+        }
+        base.OnClosing(e);
     }
 }
