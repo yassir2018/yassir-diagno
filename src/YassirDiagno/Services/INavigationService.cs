@@ -1,26 +1,42 @@
+using Microsoft.Extensions.DependencyInjection;
+using YassirDiagno.ViewModels;
+
 namespace YassirDiagno.Services;
 
 public interface INavigationService
 {
-    event EventHandler<NavigationEventArgs>? Navigated;
+    event EventHandler<ViewModelBase>? Navigated;
     void NavigateTo(string viewKey);
-    string? CurrentView { get; }
-}
-
-public sealed class NavigationEventArgs : EventArgs
-{
-    public required string ViewKey { get; init; }
+    ViewModelBase? CurrentViewModel { get; }
 }
 
 public sealed class NavigationService : INavigationService
 {
-    public string? CurrentView { get; private set; }
-    public event EventHandler<NavigationEventArgs>? Navigated;
+    private readonly IServiceProvider _services;
+    public ViewModelBase? CurrentViewModel { get; private set; }
+    public event EventHandler<ViewModelBase>? Navigated;
+
+    public NavigationService(IServiceProvider services)
+    {
+        _services = services;
+    }
 
     public void NavigateTo(string viewKey)
     {
-        if (CurrentView == viewKey) return;
-        CurrentView = viewKey;
-        Navigated?.Invoke(this, new NavigationEventArgs { ViewKey = viewKey });
+        ViewModelBase vm = viewKey switch
+        {
+            "Dashboard"   => _services.GetRequiredService<DashboardViewModel>(),
+            "System"      => _services.GetRequiredService<SystemViewModel>(),
+            "Hardware"    => _services.GetRequiredService<HardwareViewModel>(),
+            "Performance" => _services.GetRequiredService<PerformanceViewModel>(),
+            "Tools"       => _services.GetRequiredService<ToolsViewModel>(),
+            "Reports"     => _services.GetRequiredService<ReportsViewModel>(),
+            "Settings"    => _services.GetRequiredService<SettingsViewModel>(),
+            _             => _services.GetRequiredService<DashboardViewModel>(),
+        };
+
+        if (CurrentViewModel == vm) return;
+        CurrentViewModel = vm;
+        Navigated?.Invoke(this, vm);
     }
 }

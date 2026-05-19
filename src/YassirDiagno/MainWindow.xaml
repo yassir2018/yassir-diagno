@@ -83,8 +83,6 @@
             </DockPanel>
         </Border>
 
-        <ContentControl x:Name="ContentArea" Grid.Column="1">
-            <views:DashboardView/>
-        </ContentControl>
+        <ContentControl x:Name="ContentArea" Grid.Column="1" Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

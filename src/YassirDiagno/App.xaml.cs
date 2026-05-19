@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using YassirDiagno.Services;
 using YassirDiagno.Services.Hardware;
 using YassirDiagno.ViewModels;
+using YassirDiagno.Views;
 
 namespace YassirDiagno;
 
@@ -38,20 +39,36 @@ public partial class App : Application
         {
             WriteCrash("Startup", null, "OnStartup begin");
 
+            var splash = new SplashWindow();
+            splash.Show();
+            splash.SetProgress(5, "Initialisation des services...");
+            await Task.Delay(50);
+
             Host = Microsoft.Extensions.Hosting.Host
                 .CreateDefaultBuilder()
                 .ConfigureServices(ConfigureServices)
                 .Build();
 
-            WriteCrash("Startup", null, "Host built");
-
+            splash.SetProgress(20, "Démarrage du hôte d'application...");
             await Host.StartAsync();
-            WriteCrash("Startup", null, "Host started");
 
+            splash.SetProgress(35, "Initialisation du driver hardware...");
+            var monitor = Host.Services.GetRequiredService<IHardwareMonitorService>();
+            await monitor.InitializeAsync();
+
+            splash.SetProgress(70, "Détection des composants...");
+            await Task.Delay(150);
+
+            splash.SetProgress(90, "Préparation du tableau de bord...");
             var main = Host.Services.GetRequiredService<MainWindow>();
-            WriteCrash("Startup", null, "MainWindow resolved");
+            await Task.Delay(150);
+
+            splash.SetProgress(100, "Prêt");
+            await Task.Delay(200);
 
             main.Show();
+            splash.Close();
+
             WriteCrash("Startup", null, "MainWindow shown");
 
             base.OnStartup(e);
@@ -71,6 +88,12 @@ public partial class App : Application
 
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<DashboardViewModel>();
+        services.AddSingleton<SystemViewModel>();
+        services.AddSingleton<HardwareViewModel>();
+        services.AddSingleton<PerformanceViewModel>();
+        services.AddSingleton<ToolsViewModel>();
+        services.AddSingleton<ReportsViewModel>();
+        services.AddSingleton<SettingsViewModel>();
 
         services.AddSingleton<MainWindow>();
     }

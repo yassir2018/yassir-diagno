@@ -8,12 +8,12 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly INavigationService _nav;
 
-    [ObservableProperty] private string _currentView = "Dashboard";
+    [ObservableProperty] private ViewModelBase? _currentViewModel;
 
     public MainViewModel(INavigationService nav)
     {
         _nav = nav;
-        _nav.Navigated += (_, e) => CurrentView = e.ViewKey;
+        _nav.Navigated += (_, vm) => CurrentViewModel = vm;
     }
 
     [RelayCommand]
