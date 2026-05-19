@@ -8,7 +8,7 @@ $installerOut = Join-Path $root 'installer\out'
 
 Write-Host '=== Step 1: Publish self-contained release ===' -ForegroundColor Cyan
 if (Test-Path $publishDir) { Remove-Item $publishDir -Recurse -Force }
-& 'C:\Program Files\dotnet\dotnet.exe' publish $srcProj `
+& dotnet publish $srcProj `
     -c Release `
     -r win-x64 `
     --self-contained true `
