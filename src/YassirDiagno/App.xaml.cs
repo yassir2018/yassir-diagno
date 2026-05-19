@@ -84,16 +84,19 @@ public partial class App : Application
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IHardwareMonitorService, LhmHardwareMonitorService>();
+        services.AddSingleton<ISystemInfoService, SystemInfoService>();
+        services.AddSingleton<IHardwareInventoryService, HardwareInventoryService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<DashboardViewModel>();
-        services.AddSingleton<SystemViewModel>();
-        services.AddSingleton<HardwareViewModel>();
+        services.AddSingleton<SystemPageViewModel>();
+        services.AddSingleton<HardwarePageViewModel>();
         services.AddSingleton<PerformanceViewModel>();
         services.AddSingleton<ToolsViewModel>();
         services.AddSingleton<ReportsViewModel>();
-        services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<SettingsPageViewModel>();
 
         services.AddSingleton<MainWindow>();
     }

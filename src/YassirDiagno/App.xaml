@@ -14,11 +14,14 @@
             <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
                 <views:DashboardView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:SystemViewModel}">
-                <views:PlaceholderView/>
+            <DataTemplate DataType="{x:Type vm:SystemPageViewModel}">
+                <views:SystemPageView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:HardwareViewModel}">
-                <views:PlaceholderView/>
+            <DataTemplate DataType="{x:Type vm:HardwarePageViewModel}">
+                <views:HardwarePageView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsPageViewModel}">
+                <views:SettingsPageView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PerformanceViewModel}">
                 <views:PlaceholderView/>
@@ -27,9 +30,6 @@
                 <views:PlaceholderView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
-                <views:PlaceholderView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
                 <views:PlaceholderView/>
             </DataTemplate>
         </ResourceDictionary>

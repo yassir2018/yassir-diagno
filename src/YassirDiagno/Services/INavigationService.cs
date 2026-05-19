@@ -26,12 +26,12 @@ public sealed class NavigationService : INavigationService
         ViewModelBase vm = viewKey switch
         {
             "Dashboard"   => _services.GetRequiredService<DashboardViewModel>(),
-            "System"      => _services.GetRequiredService<SystemViewModel>(),
-            "Hardware"    => _services.GetRequiredService<HardwareViewModel>(),
+            "System"      => _services.GetRequiredService<SystemPageViewModel>(),
+            "Hardware"    => _services.GetRequiredService<HardwarePageViewModel>(),
             "Performance" => _services.GetRequiredService<PerformanceViewModel>(),
             "Tools"       => _services.GetRequiredService<ToolsViewModel>(),
             "Reports"     => _services.GetRequiredService<ReportsViewModel>(),
-            "Settings"    => _services.GetRequiredService<SettingsViewModel>(),
+            "Settings"    => _services.GetRequiredService<SettingsPageViewModel>(),
             _             => _services.GetRequiredService<DashboardViewModel>(),
         };
 

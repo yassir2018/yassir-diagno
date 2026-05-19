@@ -1,0 +1,131 @@
+<UserControl x:Class="YassirDiagno.Views.SystemPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource WindowBackgroundBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,18,24,18">
+        <StackPanel MaxWidth="900">
+            <TextBlock Text="SYSTÈME" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+            <TextBlock Text="Informations système, OS, RAM, BIOS" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,18"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,6,12">
+                    <StackPanel>
+                        <TextBlock Text="SYSTÈME D'EXPLOITATION" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Nom" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Info.OsName, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Version" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Info.OsVersion, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Architecture" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Info.OsArchitecture, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Installation" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Info.OsInstallDate, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Uptime" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Info.Uptime, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Grid.Row="0" Style="{StaticResource CardStyle}" Margin="6,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="MÉMOIRE RAM" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="{Binding Info.RamUsagePercent, StringFormat={}{0:F0}, FallbackValue=--}" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                            <TextBlock Text="%" FontSize="14" Foreground="{DynamicResource SecondaryTextBrush}" Margin="2,8,0,0" VerticalAlignment="Top"/>
+                            <TextBlock Text="utilisé" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="12,18,0,0" VerticalAlignment="Top"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Total" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Info.TotalRamGB, StringFormat={}{0:F1} GB, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Utilisée" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Info.UsedRamGB, StringFormat={}{0:F1} GB, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Disponible" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Info.FreeRamGB, StringFormat={}{0:F1} GB, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource AccentGreenBrush}" FontWeight="SemiBold"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,6,0">
+                    <StackPanel>
+                        <TextBlock Text="BIOS / FIRMWARE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Fabricant" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Info.BiosManufacturer, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Version" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Info.BiosVersion, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Date" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Info.BiosReleaseDate, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource CardStyle}" Margin="6,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="MACHINE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,12"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Nom hôte" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Info.Hostname, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Utilisateur" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Info.Username, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Fabricant" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Info.SystemManufacturer, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Modèle" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Info.SystemModel, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,7"/>
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Processeurs log." FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Info.LogicalProcessors, FallbackValue=--}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

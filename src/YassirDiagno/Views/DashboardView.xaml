@@ -20,69 +20,129 @@
 
         <UniformGrid Grid.Row="1" Columns="3" Rows="2" Margin="-6,-6,-6,-6">
             <Border Style="{StaticResource CardStyle}" Margin="6">
-                <StackPanel>
-                    <TextBlock Text="CPU" Style="{StaticResource LabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="CPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.CpuSilicon, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
                         <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
                     </StackPanel>
-                    <TextBlock Text="Température silicon" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Température silicon" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding CpuSparkline}" Stroke="#3B82F6" StrokeThickness="1.8"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
             <Border Style="{StaticResource CardStyle}" Margin="6">
-                <StackPanel>
-                    <TextBlock Text="GPU" Style="{StaticResource LabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="GPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.GpuZone, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
                         <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
                     </StackPanel>
-                    <TextBlock Text="Température zone" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Température zone" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding GpuSparkline}" Stroke="#10B981" StrokeThickness="1.8"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
             <Border Style="{StaticResource CardStyle}" Margin="6">
-                <StackPanel>
-                    <TextBlock Text="Puissance CPU" Style="{StaticResource LabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Puissance CPU" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.CpuPower, StringFormat={}{0:F1}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
                         <TextBlock Text="W" Style="{StaticResource UnitStyle}"/>
                     </StackPanel>
-                    <TextBlock Text="Consommation" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Consommation" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding PwrSparkline}" Stroke="#F59E0B" StrokeThickness="1.8"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
             <Border Style="{StaticResource CardStyle}" Margin="6">
-                <StackPanel>
-                    <TextBlock Text="SSD" Style="{StaticResource LabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="SSD" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.Ssd, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
                         <TextBlock Text="°C" Style="{StaticResource UnitStyle}"/>
                     </StackPanel>
-                    <TextBlock Text="Température" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Température" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding SsdSparkline}" Stroke="#06B6D4" StrokeThickness="1.8"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
             <Border Style="{StaticResource CardStyle}" Margin="6">
-                <StackPanel>
-                    <TextBlock Text="Batterie" Style="{StaticResource LabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Batterie" Style="{StaticResource LabelStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.BatteryLevel, StringFormat={}{0:F0}, FallbackValue=--}" Style="{StaticResource ValueStyle}"/>
                         <TextBlock Text="%" Style="{StaticResource UnitStyle}"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Snapshot.BatteryStatus, FallbackValue=--}" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="{Binding Snapshot.BatteryStatus, FallbackValue=--}" Style="{StaticResource LabelStyle}" FontSize="10" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding BatSparkline}" Stroke="#22C55E" StrokeThickness="1.8"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
-            <Border Style="{StaticResource CardStyle}" Margin="6" Background="{DynamicResource AccentBlueBrush}">
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Santé globale" FontSize="11" Foreground="White" Opacity="0.85"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+            <Border Style="{StaticResource CardStyle}" Margin="6" Background="{DynamicResource AccentBlueBrush}" BorderBrush="{DynamicResource AccentBlueBrush}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Santé globale" FontSize="11" Foreground="White" Opacity="0.85"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0">
                         <TextBlock Text="{Binding Snapshot.GlobalHealthScore, FallbackValue=--}" FontSize="32" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="%" FontSize="14" Foreground="White" Margin="2,8,0,0" VerticalAlignment="Top"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Snapshot.GlobalHealthLabel, FallbackValue=--}" FontSize="11" FontWeight="SemiBold" Foreground="White" Margin="0,4,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="2" Text="{Binding Snapshot.GlobalHealthLabel, FallbackValue=--}" FontSize="11" FontWeight="SemiBold" Foreground="White" Margin="0,2,0,4"/>
+                    <Canvas Grid.Row="3" Height="32" ClipToBounds="True">
+                        <Polyline Points="{Binding HealthSparkline}" Stroke="White" StrokeThickness="1.8" Opacity="0.7"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                    </Canvas>
+                </Grid>
             </Border>
         </UniformGrid>
 
