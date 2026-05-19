@@ -20,17 +20,17 @@
             <DataTemplate DataType="{x:Type vm:HardwarePageViewModel}">
                 <views:HardwarePageView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PerformancePageViewModel}">
+                <views:PerformancePageView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ToolsPageViewModel}">
+                <views:ToolsPageView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ReportsPageViewModel}">
+                <views:ReportsPageView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:SettingsPageViewModel}">
                 <views:SettingsPageView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PerformanceViewModel}">
-                <views:PlaceholderView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:ToolsViewModel}">
-                <views:PlaceholderView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
-                <views:PlaceholderView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

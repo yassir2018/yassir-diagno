@@ -37,15 +37,12 @@ public partial class DashboardViewModel : ViewModelBase
         _monitor = monitor;
     }
 
-    public override async Task LoadAsync(CancellationToken ct = default)
+    public override Task LoadAsync(CancellationToken ct = default)
     {
-        await _monitor.InitializeAsync(ct);
         Identity = _monitor.GetIdentity();
         _monitor.SnapshotUpdated += OnSnapshotUpdated;
-        _monitor.StartPolling(TimeSpan.FromSeconds(1));
-
-        var initial = _monitor.ReadSnapshot();
-        OnSnapshotUpdated(this, initial);
+        OnSnapshotUpdated(this, _monitor.ReadSnapshot());
+        return Task.CompletedTask;
     }
 
     public override Task UnloadAsync(CancellationToken ct = default)

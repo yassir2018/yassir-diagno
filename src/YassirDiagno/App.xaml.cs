@@ -56,7 +56,11 @@ public partial class App : Application
             var monitor = Host.Services.GetRequiredService<IHardwareMonitorService>();
             await monitor.InitializeAsync();
 
-            splash.SetProgress(70, "Détection des composants...");
+            splash.SetProgress(55, "Démarrage du collecteur d'historique...");
+            _ = Host.Services.GetRequiredService<ISensorHistoryService>();
+            monitor.StartPolling(TimeSpan.FromSeconds(1));
+
+            splash.SetProgress(75, "Détection des composants...");
             await Task.Delay(150);
 
             splash.SetProgress(90, "Préparation du tableau de bord...");
@@ -86,16 +90,20 @@ public partial class App : Application
         services.AddSingleton<IHardwareMonitorService, LhmHardwareMonitorService>();
         services.AddSingleton<ISystemInfoService, SystemInfoService>();
         services.AddSingleton<IHardwareInventoryService, HardwareInventoryService>();
+        services.AddSingleton<ISensorHistoryService, SensorHistoryService>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IDiagnosticService, DiagnosticService>();
+        services.AddSingleton<IStressTestService, StressTestService>();
+        services.AddSingleton<IReportService, ReportService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<SystemPageViewModel>();
         services.AddSingleton<HardwarePageViewModel>();
-        services.AddSingleton<PerformanceViewModel>();
-        services.AddSingleton<ToolsViewModel>();
-        services.AddSingleton<ReportsViewModel>();
+        services.AddSingleton<PerformancePageViewModel>();
+        services.AddSingleton<ToolsPageViewModel>();
+        services.AddSingleton<ReportsPageViewModel>();
         services.AddSingleton<SettingsPageViewModel>();
 
         services.AddSingleton<MainWindow>();

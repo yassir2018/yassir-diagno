@@ -1,0 +1,107 @@
+<UserControl x:Class="YassirDiagno.Views.ToolsPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:YassirDiagno.Converters"
+             Background="{DynamicResource WindowBackgroundBrush}">
+    <UserControl.Resources>
+        <conv:SeverityToBrushConverter x:Key="SevBrush"/>
+        <conv:SeverityToIconConverter x:Key="SevIcon"/>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,18,24,18">
+        <StackPanel MaxWidth="900">
+            <TextBlock Text="OUTILS" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+            <TextBlock Text="Scan diagnostic et stress test" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,18"/>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="SCAN RAPIDE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}"/>
+                            <TextBlock Text="Analyse complète de l'état de votre système" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Button Command="{Binding RunScanCommand}" Content="🔍  Lancer le scan" Padding="18,8" FontSize="12" FontWeight="SemiBold"
+                                Background="{DynamicResource AccentBlueBrush}" Foreground="White" BorderThickness="0" Cursor="Hand"
+                                HorizontalAlignment="Right" IsEnabled="{Binding IsScanning, Converter={x:Static conv:InverseBoolConverter.Instance}, FallbackValue=True}"/>
+                    </Grid>
+                    <TextBlock Text="{Binding ScanStatus}" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,10"/>
+
+                    <ItemsControl ItemsSource="{Binding Findings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource SurfaceAltBrush}" CornerRadius="6" Padding="12,10" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="32"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Severity, Converter={StaticResource SevIcon}}"
+                                                   Foreground="{Binding Severity, Converter={StaticResource SevBrush}}"
+                                                   FontSize="18" FontWeight="Bold" VerticalAlignment="Top"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Title}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                            <TextBlock Text="{Binding Detail}" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Recommendation}" FontSize="10" FontStyle="Italic" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,4,0,0" TextWrapping="Wrap"
+                                                       Visibility="{Binding Recommendation, Converter={x:Static conv:NullToVisibilityConverter.Instance}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="STRESS TEST CPU" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding StressStatus}" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,12" TextWrapping="Wrap"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Durée :" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBox Text="{Binding StressDuration}" Width="60" Padding="8,5" TextAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="secondes" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Command="{Binding RunStressCommand}" Padding="18,8" FontSize="12" FontWeight="SemiBold"
+                                Background="{DynamicResource AccentRedBrush}" Foreground="White" BorderThickness="0" Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Content" Value="⚡  Démarrer stress test"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsStressing}" Value="True">
+                                            <Setter Property="Content" Value="■  Arrêter"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsStressing, Converter={x:Static conv:BoolToVisibilityConverter.Instance}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding StressElapsed, StringFormat='{}{0}s'}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AccentBlueBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="écoulé" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding StressCurrentTemp, StringFormat='{}{0:F0}°C'}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AccentYellowBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="actuel" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding StressPeakTemp, StringFormat='{}{0:F0}°C'}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AccentRedBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="peak" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
