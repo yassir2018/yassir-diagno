@@ -149,6 +149,7 @@ public partial class App : Application
         services.AddSingleton<IThemeService, ThemeService>();
         services.AddSingleton<IAutoStartService, AutoStartService>();
         services.AddSingleton<INotificationService, NotificationService>();
+        services.AddSingleton<ICsvLoggingService, CsvLoggingService>();
         services.AddSingleton<IDiagnosticService, DiagnosticService>();
         services.AddSingleton<IStressTestService, StressTestService>();
         services.AddSingleton<IReportService, ReportService>();

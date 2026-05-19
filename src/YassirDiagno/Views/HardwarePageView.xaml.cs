@@ -12,5 +12,9 @@ public partial class HardwarePageView : UserControl
         {
             if (DataContext is ViewModelBase vm) await vm.LoadAsync();
         };
+        Unloaded += async (_, _) =>
+        {
+            if (DataContext is ViewModelBase vm) await vm.UnloadAsync();
+        };
     }
 }

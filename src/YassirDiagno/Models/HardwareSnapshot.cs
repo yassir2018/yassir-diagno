@@ -1,5 +1,7 @@
 namespace YassirDiagno.Models;
 
+public record CpuCoreInfo(int Index, double? LoadPercent, double? ClockMHz);
+
 public record HardwareSnapshot(
     DateTime Timestamp,
     double? CpuSilicon,
@@ -13,7 +15,10 @@ public record HardwareSnapshot(
     double? BatteryHealth,
     string? BatteryStatus,
     int GlobalHealthScore,
-    string GlobalHealthLabel)
+    string GlobalHealthLabel,
+    double? CpuTotalLoad = null,
+    double? CpuAverageClock = null,
+    IReadOnlyList<CpuCoreInfo>? Cores = null)
 {
     public static HardwareSnapshot Empty() => new(
         DateTime.Now, null, null, null, null, null, null, null, null, null, null, 100, "BON");

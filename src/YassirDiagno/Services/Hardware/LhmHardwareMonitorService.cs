@@ -42,8 +42,11 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
         if (!_opened) return HardwareSnapshot.Empty();
 
         double? cpuSilicon = null, cpuPower = null, ssd = null,
-                gpuLoad = null, battLevel = null, battHealth = null;
+                gpuLoad = null, battLevel = null, battHealth = null,
+                cpuTotalLoad = null, cpuAvgClock = null;
         string? battStatus = null;
+        var coreLoads = new Dictionary<int, double>();
+        var coreClocks = new Dictionary<int, double>();
 
         foreach (var hw in _computer.Hardware)
         {
@@ -68,6 +71,22 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
                         else if (s.SensorType == LhmSensorType.Power && s.Name == "Package")
                         {
                             cpuPower = s.Value;
+                        }
+                        else if (s.SensorType == LhmSensorType.Load && s.Name == "CPU Total")
+                        {
+                            cpuTotalLoad = s.Value;
+                        }
+                        else if (s.SensorType == LhmSensorType.Load && s.Name.StartsWith("CPU Core #", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (TryExtractIndex(s.Name, out var idx)) coreLoads[idx] = s.Value.Value;
+                        }
+                        else if (s.SensorType == LhmSensorType.Clock && s.Name == "Cores (Average)")
+                        {
+                            cpuAvgClock = s.Value;
+                        }
+                        else if (s.SensorType == LhmSensorType.Clock && s.Name.StartsWith("Core #", StringComparison.OrdinalIgnoreCase) && !s.Name.Contains("Effective"))
+                        {
+                            if (TryExtractIndex(s.Name, out var idx)) coreClocks[idx] = s.Value.Value;
                         }
                     }
                     break;
@@ -128,9 +147,27 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
         var score = ComputeHealthScore(cpuSilicon, ssd, battHealth, cpuSilicon - extZone);
         var label = score >= 85 ? "BON" : score >= 70 ? "OK" : score >= 50 ? "ATTENTION" : "MAUVAIS";
 
+        var allIndices = coreLoads.Keys.Union(coreClocks.Keys).OrderBy(i => i).ToArray();
+        var cores = allIndices.Select(i => new CpuCoreInfo(
+            i,
+            coreLoads.TryGetValue(i, out var l) ? l : null,
+            coreClocks.TryGetValue(i, out var c) ? c : null
+        )).ToArray();
+
         return new HardwareSnapshot(
             DateTime.Now, cpuSilicon, cpuPower, cpuZone, gpuZone, gpuLoad, ssd, extZone,
-            battLevel, battHealth, battStatus, score, label);
+            battLevel, battHealth, battStatus, score, label,
+            cpuTotalLoad, cpuAvgClock, cores);
+    }
+
+    private static bool TryExtractIndex(string name, out int index)
+    {
+        index = 0;
+        var hashIdx = name.IndexOf('#');
+        if (hashIdx < 0 || hashIdx + 1 >= name.Length) return false;
+        var rest = name[(hashIdx + 1)..].TrimStart();
+        var digits = new string(rest.TakeWhile(char.IsDigit).ToArray());
+        return int.TryParse(digits, out index);
     }
 
     private static int ComputeHealthScore(double? cpu, double? ssd, double? batHealth, double? thermalDelta)
