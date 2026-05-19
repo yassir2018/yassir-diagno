@@ -28,7 +28,7 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IHardwareMonitorService, StubHardwareMonitorService>();
+        services.AddSingleton<IHardwareMonitorService, LhmHardwareMonitorService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();
