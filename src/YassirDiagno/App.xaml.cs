@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,19 +12,56 @@ public partial class App : Application
 {
     public static IHost? Host { get; private set; }
 
+    private static readonly string LogPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "YassirDiagno", "crash.log");
+
+    public App()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            WriteCrash("AppDomain.UnhandledException", e.ExceptionObject as Exception);
+        DispatcherUnhandledException += (_, e) =>
+        {
+            WriteCrash("Dispatcher.UnhandledException", e.Exception);
+            e.Handled = true;
+        };
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+        {
+            WriteCrash("TaskScheduler.UnobservedTaskException", e.Exception);
+            e.SetObserved();
+        };
+    }
+
     protected override async void OnStartup(StartupEventArgs e)
     {
-        Host = Microsoft.Extensions.Hosting.Host
-            .CreateDefaultBuilder()
-            .ConfigureServices(ConfigureServices)
-            .Build();
+        try
+        {
+            WriteCrash("Startup", null, "OnStartup begin");
 
-        await Host.StartAsync();
+            Host = Microsoft.Extensions.Hosting.Host
+                .CreateDefaultBuilder()
+                .ConfigureServices(ConfigureServices)
+                .Build();
 
-        var main = Host.Services.GetRequiredService<MainWindow>();
-        main.Show();
+            WriteCrash("Startup", null, "Host built");
 
-        base.OnStartup(e);
+            await Host.StartAsync();
+            WriteCrash("Startup", null, "Host started");
+
+            var main = Host.Services.GetRequiredService<MainWindow>();
+            WriteCrash("Startup", null, "MainWindow resolved");
+
+            main.Show();
+            WriteCrash("Startup", null, "MainWindow shown");
+
+            base.OnStartup(e);
+        }
+        catch (Exception ex)
+        {
+            WriteCrash("OnStartup", ex);
+            MessageBox.Show($"Erreur startup: {ex.Message}\n\nDetails dans: {LogPath}", "Yassir Diagno", MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown(1);
+        }
     }
 
     private static void ConfigureServices(IServiceCollection services)
@@ -45,5 +83,16 @@ public partial class App : Application
             Host.Dispose();
         }
         base.OnExit(e);
+    }
+
+    private static void WriteCrash(string source, Exception? ex, string? note = null)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
+            var msg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{source}] {note ?? ex?.ToString() ?? "(no detail)"}";
+            File.AppendAllText(LogPath, msg + Environment.NewLine);
+        }
+        catch { }
     }
 }
