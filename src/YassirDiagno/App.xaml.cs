@@ -105,7 +105,7 @@ public partial class App : Application
 
         try
         {
-            var iconUri = new Uri("pack://application:,,,/YassirDiagno;component/Resources/Icons/tray.ico", UriKind.Absolute);
+            var iconUri = new Uri("pack://application:,,,/Resources/Icons/yassir.ico", UriKind.Absolute);
             _trayIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
         }
         catch { }
@@ -153,6 +153,7 @@ public partial class App : Application
         services.AddSingleton<IDiagnosticService, DiagnosticService>();
         services.AddSingleton<IStressTestService, StressTestService>();
         services.AddSingleton<IReportService, ReportService>();
+        services.AddSingleton<IProcessExplorerService, ProcessExplorerService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();
@@ -160,6 +161,7 @@ public partial class App : Application
         services.AddSingleton<SystemPageViewModel>();
         services.AddSingleton<HardwarePageViewModel>();
         services.AddSingleton<PerformancePageViewModel>();
+        services.AddSingleton<ProcessesPageViewModel>();
         services.AddSingleton<ToolsPageViewModel>();
         services.AddSingleton<ReportsPageViewModel>();
         services.AddSingleton<SettingsPageViewModel>();

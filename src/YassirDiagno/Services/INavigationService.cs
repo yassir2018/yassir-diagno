@@ -29,6 +29,7 @@ public sealed class NavigationService : INavigationService
             "System"      => _services.GetRequiredService<SystemPageViewModel>(),
             "Hardware"    => _services.GetRequiredService<HardwarePageViewModel>(),
             "Performance" => _services.GetRequiredService<PerformancePageViewModel>(),
+            "Processes"   => _services.GetRequiredService<ProcessesPageViewModel>(),
             "Tools"       => _services.GetRequiredService<ToolsPageViewModel>(),
             "Reports"     => _services.GetRequiredService<ReportsPageViewModel>(),
             "Settings"    => _services.GetRequiredService<SettingsPageViewModel>(),

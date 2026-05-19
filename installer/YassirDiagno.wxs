@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="Yassir Diagno"
+           Manufacturer="Yassir Mellakh"
+           Version="1.0.0.0"
+           UpgradeCode="b3a9e2c4-1d7f-4b6e-9c8a-2e5f7a8b4d61"
+           Scope="perMachine">
+
+    <SummaryInformation Description="Yassir Diagno — Thermal &amp; Hardware Monitor"
+                        Keywords="hardware,monitor,thermal,diagnostic"
+                        Manufacturer="Yassir Mellakh"/>
+
+    <MajorUpgrade DowngradeErrorMessage="Une version plus récente de [ProductName] est déjà installée."
+                  Schedule="afterInstallInitialize"/>
+
+    <MediaTemplate EmbedCab="yes"/>
+
+    <Icon Id="AppIcon" SourceFile="..\src\YassirDiagno\Resources\Icons\yassir.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon"/>
+    <Property Id="ARPHELPLINK" Value="https://github.com/yassir-mellakh/yassirdiagno"/>
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/yassir-mellakh/yassirdiagno"/>
+
+    <Feature Id="MainFeature" Title="Yassir Diagno" Level="1" AllowAdvertise="no">
+      <ComponentGroupRef Id="AppFiles"/>
+      <ComponentRef Id="StartMenuShortcut"/>
+      <ComponentRef Id="DesktopShortcut"/>
+    </Feature>
+
+    <ui:WixUI Id="WixUI_InstallDir"/>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Yassir Diagno"/>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppShortcutFolder" Name="Yassir Diagno">
+        <Component Id="StartMenuShortcut" Guid="*">
+          <Shortcut Id="StartMenuYassir"
+                    Name="Yassir Diagno"
+                    Description="Thermal &amp; Hardware Monitor"
+                    Target="[INSTALLFOLDER]YassirDiagno.exe"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="AppIcon"/>
+          <RemoveFolder Id="RemoveStartMenuFolder" On="uninstall"/>
+          <RegistryValue Root="HKCU"
+                         Key="Software\YassirMellakh\YassirDiagno"
+                         Name="installed"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes"/>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="*">
+        <Shortcut Id="DesktopYassir"
+                  Name="Yassir Diagno"
+                  Description="Thermal &amp; Hardware Monitor"
+                  Target="[INSTALLFOLDER]YassirDiagno.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon"/>
+        <RegistryValue Root="HKCU"
+                       Key="Software\YassirMellakh\YassirDiagno"
+                       Name="desktop"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"/>
+      </Component>
+    </StandardDirectory>
+
+  </Package>
+</Wix>

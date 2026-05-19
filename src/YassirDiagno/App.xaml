@@ -22,6 +22,9 @@
             <DataTemplate DataType="{x:Type vm:PerformancePageViewModel}">
                 <views:PerformancePageView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ProcessesPageViewModel}">
+                <views:ProcessesPageView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ToolsPageViewModel}">
                 <views:ToolsPageView/>
             </DataTemplate>

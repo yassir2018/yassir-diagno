@@ -7,6 +7,7 @@
         xmlns:views="clr-namespace:YassirDiagno.Views"
         mc:Ignorable="d"
         Title="Yassir Diagno"
+        Icon="pack://application:,,,/Resources/Icons/yassir.ico"
         Height="700" Width="1180"
         MinHeight="600" MinWidth="900"
         Background="{DynamicResource WindowBackgroundBrush}"
@@ -73,6 +74,8 @@
                                  Command="{Binding NavigateCommand}" CommandParameter="Hardware" Content="🔧  Matériel"/>
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
                                  Command="{Binding NavigateCommand}" CommandParameter="Performance" Content="📊  Performance"/>
+                    <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Processes" Content="⚙  Processus"/>
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"
                                  Command="{Binding NavigateCommand}" CommandParameter="Tools" Content="🛠  Outils"/>
                     <RadioButton Style="{StaticResource SidebarItemStyle}" GroupName="Nav"

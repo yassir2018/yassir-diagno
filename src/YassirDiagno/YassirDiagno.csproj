@@ -29,6 +29,11 @@
 
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Resources/Icons/yassir.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources/Icons/yassir.ico"/>
+  </ItemGroup>
 
 </Project>
