@@ -2,6 +2,8 @@ namespace YassirDiagno.Models;
 
 public record CpuCoreInfo(int Index, double? LoadPercent, double? ClockMHz);
 
+public record GpuEngineLoad(string Name, double LoadPercent);
+
 public record HardwareSnapshot(
     DateTime Timestamp,
     double? CpuSilicon,
@@ -28,7 +30,8 @@ public record HardwareSnapshot(
     double? SsdLifeRemaining = null,
     double? SsdAvailableSpare = null,
     double? GpuMemoryUsedMB = null,
-    double? GpuMemoryTotalMB = null)
+    double? GpuMemoryTotalMB = null,
+    IReadOnlyList<GpuEngineLoad>? GpuEngines = null)
 {
     public static HardwareSnapshot Empty() => new(
         DateTime.Now, null, null, null, null, null, null, null, null, null, null, 100, "BON");

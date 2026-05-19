@@ -20,6 +20,45 @@
                     <StackPanel>
                         <Grid Margin="0,0,0,12">
                             <StackPanel HorizontalAlignment="Left">
+                                <TextBlock Text="GPU - DÉTAIL PAR MOTEUR" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}"/>
+                                <TextBlock Text="{Binding GpuName}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding GpuEngines}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SurfaceAltBrush}" CornerRadius="6" Padding="10,8" Margin="3">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="10" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                <Border Background="{DynamicResource BorderBrush}" Height="4" CornerRadius="2" Margin="0,4,8,0">
+                                                    <Border HorizontalAlignment="Left" Height="4" CornerRadius="2" Background="{DynamicResource AccentGreenBrush}"
+                                                            Width="{Binding LoadPercent, FallbackValue=0}"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding LoadPercent, StringFormat={}{0:F1}%}" FontSize="10" Foreground="{DynamicResource AccentGreenBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <StackPanel HorizontalAlignment="Left">
                                 <TextBlock Text="CPU - DÉTAIL PAR CŒUR" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TertiaryTextBrush}"/>
                                 <TextBlock Text="{Binding CpuName}" FontSize="11" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="SemiBold" Margin="0,2,0,0"/>
                             </StackPanel>

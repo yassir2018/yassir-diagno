@@ -181,8 +181,14 @@
             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                 <Button Command="{Binding SaveCommand}" Content="💾  Sauvegarder" Padding="20,10" FontSize="12" FontWeight="SemiBold"
                         Background="{DynamicResource AccentBlueBrush}" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                <Button Command="{Binding ResetCommand}" Content="Réinitialiser" Padding="20,10" FontSize="12" Margin="8,0,0,0"
+                <Button Command="{Binding ResetCommand}" Content="Réinitialiser" Padding="14,10" FontSize="12" Margin="8,0,0,0"
                         Background="Transparent" Foreground="{DynamicResource SecondaryTextBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Cursor="Hand"/>
+                <Button Command="{Binding ExportSettingsCommand}" Content="📤  Exporter" Padding="14,10" FontSize="12" Margin="8,0,0,0"
+                        Background="Transparent" Foreground="{DynamicResource PrimaryTextBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Cursor="Hand"
+                        ToolTip="Exporter tous les paramètres dans un fichier JSON"/>
+                <Button Command="{Binding ImportSettingsCommand}" Content="📥  Importer" Padding="14,10" FontSize="12" Margin="8,0,0,0"
+                        Background="Transparent" Foreground="{DynamicResource PrimaryTextBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Cursor="Hand"
+                        ToolTip="Restaurer paramètres depuis un fichier JSON"/>
                 <TextBlock Text="{Binding SaveStatus}" FontSize="11" Foreground="{DynamicResource AccentGreenBrush}" VerticalAlignment="Center" Margin="14,0,0,0"/>
             </StackPanel>
         </StackPanel>

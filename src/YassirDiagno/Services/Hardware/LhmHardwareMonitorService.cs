@@ -49,6 +49,7 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
         string? battStatus = null;
         var coreLoads = new Dictionary<int, double>();
         var coreClocks = new Dictionary<int, double>();
+        var gpuEngines = new List<GpuEngineLoad>();
 
         foreach (var hw in _computer.Hardware)
         {
@@ -99,10 +100,15 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
                     foreach (var s in hw.Sensors)
                     {
                         if (s.Value is null) continue;
-                        if (s.SensorType == LhmSensorType.Load &&
-                            (s.Name.Contains("D3D 3D") || s.Name.Contains("GPU Core")))
+                        if (s.SensorType == LhmSensorType.Load)
                         {
-                            if (gpuLoad is null || s.Value > gpuLoad) gpuLoad = s.Value;
+                            var name = s.Name;
+                            if (name.StartsWith("D3D ", StringComparison.OrdinalIgnoreCase) || name.Contains("GPU Core"))
+                            {
+                                if (s.Value.Value >= 0)
+                                    gpuEngines.Add(new GpuEngineLoad(NormalizeGpuEngineName(name), s.Value.Value));
+                                if (gpuLoad is null || s.Value > gpuLoad) gpuLoad = s.Value;
+                            }
                         }
                         else if (s.SensorType == LhmSensorType.SmallData && s.Name == "GPU Memory Used")
                         {
@@ -204,7 +210,16 @@ public sealed class LhmHardwareMonitorService : IHardwareMonitorService
             ramPct, ramTotal, ramUsed,
             diskFree, diskTotal, diskFreePct,
             ssdLife, ssdSpare,
-            gpuMemUsed, gpuMemTotal);
+            gpuMemUsed, gpuMemTotal,
+            gpuEngines.OrderByDescending(e => e.LoadPercent).ToArray());
+    }
+
+    private static string NormalizeGpuEngineName(string name)
+    {
+        var n = name;
+        if (n.StartsWith("D3D ", StringComparison.OrdinalIgnoreCase)) n = n[4..];
+        n = n.Trim();
+        return n;
     }
 
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]

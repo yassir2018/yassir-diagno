@@ -85,6 +85,73 @@ public partial class SettingsPageViewModel : ViewModelBase
         catch { }
     }
 
+    [RelayCommand]
+    private async Task ExportSettings()
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            FileName = $"YassirDiagno-Settings-{DateTime.Now:yyyy-MM-dd}.json",
+            DefaultExt = ".json",
+            Filter = "JSON (*.json)|*.json"
+        };
+        if (dialog.ShowDialog() != true) return;
+        try
+        {
+            _settings.Current.PollingIntervalSeconds = Math.Max(1, Math.Min(60, PollingIntervalSeconds));
+            _settings.Current.StartMinimized = StartMinimized;
+            _settings.Current.ShowSparklines = ShowSparklines;
+            _settings.Current.StartWithWindows = StartWithWindows;
+            _settings.Current.NotificationsEnabled = NotificationsEnabled;
+            _settings.Current.Theme = IsDarkTheme ? "Dark" : "Light";
+
+            var json = System.Text.Json.JsonSerializer.Serialize(_settings.Current,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            await System.IO.File.WriteAllTextAsync(dialog.FileName, json);
+            SaveStatus = $"✓ Exporté: {System.IO.Path.GetFileName(dialog.FileName)}";
+        }
+        catch (Exception ex) { SaveStatus = $"Erreur export: {ex.Message}"; }
+    }
+
+    [RelayCommand]
+    private async Task ImportSettings()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            DefaultExt = ".json",
+            Filter = "JSON (*.json)|*.json",
+            Title = "Importer paramètres Yassir Diagno"
+        };
+        if (dialog.ShowDialog() != true) return;
+        try
+        {
+            var json = await System.IO.File.ReadAllTextAsync(dialog.FileName);
+            var imported = System.Text.Json.JsonSerializer.Deserialize<AppSettings>(json);
+            if (imported is null) { SaveStatus = "✕ Fichier vide ou invalide"; return; }
+
+            _settings.Current.PollingIntervalSeconds = Math.Max(1, Math.Min(60, imported.PollingIntervalSeconds));
+            _settings.Current.StartWithWindows = imported.StartWithWindows;
+            _settings.Current.StartMinimized = imported.StartMinimized;
+            _settings.Current.ShowSparklines = imported.ShowSparklines;
+            _settings.Current.NotificationsEnabled = imported.NotificationsEnabled;
+            _settings.Current.Theme = imported.Theme;
+            _settings.Current.CpuTempCriticalThreshold = imported.CpuTempCriticalThreshold;
+            _settings.Current.SsdTempCriticalThreshold = imported.SsdTempCriticalThreshold;
+            _settings.Save();
+            _autoStart.SetEnabled(imported.StartWithWindows);
+
+            PollingIntervalSeconds = imported.PollingIntervalSeconds;
+            StartWithWindows = imported.StartWithWindows;
+            StartMinimized = imported.StartMinimized;
+            ShowSparklines = imported.ShowSparklines;
+            NotificationsEnabled = imported.NotificationsEnabled;
+            var wantDark = string.Equals(imported.Theme, "Dark", StringComparison.OrdinalIgnoreCase);
+            if (IsDarkTheme != wantDark) IsDarkTheme = wantDark;
+
+            SaveStatus = $"✓ Importé: {System.IO.Path.GetFileName(dialog.FileName)}";
+        }
+        catch (Exception ex) { SaveStatus = $"Erreur import: {ex.Message}"; }
+    }
+
     partial void OnIsDarkThemeChanged(bool value)
     {
         _theme.Apply(value ? AppTheme.Dark : AppTheme.Light);

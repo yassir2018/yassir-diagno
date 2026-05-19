@@ -13,9 +13,11 @@ public partial class HardwarePageViewModel : ViewModelBase
 
     [ObservableProperty] private ObservableCollection<HardwareItem> _items = new();
     [ObservableProperty] private ObservableCollection<CpuCoreInfo> _cores = new();
+    [ObservableProperty] private ObservableCollection<GpuEngineLoad> _gpuEngines = new();
     [ObservableProperty] private double _cpuTotalLoad;
     [ObservableProperty] private double _cpuAverageClockGhz;
     [ObservableProperty] private string _cpuName = "";
+    [ObservableProperty] private string _gpuName = "";
     [ObservableProperty] private bool _isLoading = true;
 
     public HardwarePageViewModel(IHardwareInventoryService inv, IHardwareMonitorService monitor)
@@ -28,7 +30,9 @@ public partial class HardwarePageViewModel : ViewModelBase
     {
         IsLoading = true;
         Items = await _inv.GetInventoryAsync();
-        CpuName = _monitor.GetIdentity().CpuName;
+        var id = _monitor.GetIdentity();
+        CpuName = id.CpuName;
+        GpuName = id.GpuName;
         _monitor.SnapshotUpdated += OnSnapshot;
         OnSnapshot(this, _monitor.ReadSnapshot());
         IsLoading = false;
@@ -50,6 +54,11 @@ public partial class HardwarePageViewModel : ViewModelBase
             {
                 Cores.Clear();
                 foreach (var c in s.Cores) Cores.Add(c);
+            }
+            if (s.GpuEngines is { Count: > 0 })
+            {
+                GpuEngines.Clear();
+                foreach (var e in s.GpuEngines) GpuEngines.Add(e);
             }
         });
     }
