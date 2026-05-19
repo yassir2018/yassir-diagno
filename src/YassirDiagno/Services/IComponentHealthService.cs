@@ -405,6 +405,7 @@ public sealed class ComponentHealthService : IComponentHealthService
             var speedMbps = primary.Speed / 1_000_000;
             var ip = primary.GetIPProperties().UnicastAddresses
                 .FirstOrDefault(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.Address.ToString() ?? "--";
+            var isWifi = primary.NetworkInterfaceType == NetworkInterfaceType.Wireless80211;
             var typeLabel = primary.NetworkInterfaceType switch
             {
                 NetworkInterfaceType.Ethernet => "Ethernet",
@@ -412,37 +413,99 @@ public sealed class ComponentHealthService : IComponentHealthService
                 _ => primary.NetworkInterfaceType.ToString()
             };
 
+            string? ssid = null;
+            int? signalPct = null;
+            if (isWifi) (ssid, signalPct) = TryGetWifiInfo();
+
             HealthStatus status;
             string label, verdict;
             var issues = new List<HealthIssue>();
-            if (speedMbps >= 100) { status = HealthStatus.Excellent; label = "Connecté"; verdict = $"Connexion {typeLabel} à {speedMbps} Mbps."; }
-            else if (speedMbps >= 10) { status = HealthStatus.Good; label = "Connecté"; verdict = $"Connexion {typeLabel} à {speedMbps} Mbps."; }
-            else { status = HealthStatus.Warning; label = "Lent"; verdict = $"Vitesse de lien faible: {speedMbps} Mbps.";
-                    issues.Add(new("Lien lent", $"{speedMbps} Mbps", "Vérifier qualité câble / proximité routeur")); }
+
+            if (isWifi && signalPct is int sig)
+            {
+                if (sig >= 70)       { status = HealthStatus.Excellent; label = "Signal fort"; verdict = $"Wi-Fi connecté à {ssid ?? "?"} — signal {sig}%."; }
+                else if (sig >= 50)  { status = HealthStatus.Good;      label = "Signal OK";   verdict = $"Wi-Fi connecté à {ssid ?? "?"} — signal {sig}%."; }
+                else if (sig >= 30)  { status = HealthStatus.Warning;   label = "Signal faible"; verdict = $"Signal Wi-Fi {sig}% — qualité limitée.";
+                                        issues.Add(new("Wi-Fi signal faible", $"{sig}% < 50%", "Rapprocher du routeur, vérifier interférences")); }
+                else                  { status = HealthStatus.Critical;  label = "Signal critique"; verdict = $"Signal Wi-Fi {sig}% — connexion instable.";
+                                        issues.Add(new("Wi-Fi très faible", $"{sig}% < 30%", "Se rapprocher urgemment du routeur ou utiliser Ethernet")); }
+            }
+            else if (speedMbps >= 100) { status = HealthStatus.Excellent; label = "Connecté"; verdict = $"Connexion {typeLabel} à {speedMbps} Mbps."; }
+            else if (speedMbps >= 10)  { status = HealthStatus.Good;      label = "Connecté"; verdict = $"Connexion {typeLabel} à {speedMbps} Mbps."; }
+            else                        { status = HealthStatus.Warning;   label = "Lent";     verdict = $"Vitesse de lien faible: {speedMbps} Mbps.";
+                                          issues.Add(new("Lien lent", $"{speedMbps} Mbps", "Vérifier qualité câble / proximité routeur")); }
+
+            var metrics = new List<HealthMetric>
+            {
+                new("Type",          typeLabel),
+                new("Vitesse lien",  $"{speedMbps} Mbps"),
+                new("Adresse IP",    ip)
+            };
+            if (isWifi)
+            {
+                if (ssid != null) metrics.Add(new("Réseau Wi-Fi", ssid));
+                if (signalPct is int s) metrics.Add(new("Force signal", $"{s} %"));
+            }
+            metrics.Add(new("Interfaces UP", interfaces.Count.ToString()));
 
             return new ComponentHealth
             {
                 Name = "Connexion réseau",
-                Icon = "📡",
+                Icon = isWifi ? "📶" : "📡",
                 Subtitle = typeLabel + " — " + primary.Name,
                 Status = status,
                 StatusLabel = label,
                 Verdict = verdict,
                 Issues = issues,
-                Thresholds = "Excellent ≥100 Mbps · Bon 10-100 Mbps · Lent <10 Mbps",
-                Metrics = new()
-                {
-                    new("Type",          typeLabel),
-                    new("Vitesse lien",  $"{speedMbps} Mbps"),
-                    new("Adresse IP",    ip),
-                    new("Interfaces UP", interfaces.Count.ToString())
-                }
+                Thresholds = isWifi ? "Signal: ≥70% excellent · 50-70% OK · 30-50% faible · <30% critique"
+                                    : "Excellent ≥100 Mbps · Bon 10-100 Mbps · Lent <10 Mbps",
+                Metrics = metrics
             };
         }
         catch
         {
             return FallbackUnknown("Connexion réseau", "📡", "Wi-Fi / Ethernet");
         }
+    }
+
+    private static (string? ssid, int? signalPct) TryGetWifiInfo()
+    {
+        try
+        {
+            using var p = new System.Diagnostics.Process();
+            p.StartInfo.FileName = "netsh.exe";
+            p.StartInfo.Arguments = "wlan show interfaces";
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+            var output = p.StandardOutput.ReadToEnd();
+            p.WaitForExit(2000);
+
+            string? ssid = null;
+            int? sig = null;
+
+            foreach (var line in output.Split('\n'))
+            {
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("SSID", StringComparison.OrdinalIgnoreCase) && !trimmed.StartsWith("BSSID", StringComparison.OrdinalIgnoreCase))
+                {
+                    var idx = trimmed.IndexOf(':');
+                    if (idx > 0 && idx + 1 < trimmed.Length) ssid = trimmed[(idx + 1)..].Trim();
+                }
+                else if (trimmed.Contains("Signal", StringComparison.OrdinalIgnoreCase) || trimmed.Contains("signal", StringComparison.OrdinalIgnoreCase))
+                {
+                    var idx = trimmed.IndexOf(':');
+                    if (idx > 0 && idx + 1 < trimmed.Length)
+                    {
+                        var val = trimmed[(idx + 1)..].Trim().TrimEnd('%').Trim();
+                        if (int.TryParse(val, out var s)) sig = s;
+                    }
+                }
+            }
+            return (ssid, sig);
+        }
+        catch { return (null, null); }
     }
 
     private static ComponentHealth AnalyzeThermalEvents()

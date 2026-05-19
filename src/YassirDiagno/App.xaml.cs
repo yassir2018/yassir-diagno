@@ -155,6 +155,7 @@ public partial class App : Application
         services.AddSingleton<IReportService, ReportService>();
         services.AddSingleton<IProcessExplorerService, ProcessExplorerService>();
         services.AddSingleton<IComponentHealthService, ComponentHealthService>();
+        services.AddSingleton<IUpdateCheckService, UpdateCheckService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<MainViewModel>();

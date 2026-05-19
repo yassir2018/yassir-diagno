@@ -118,10 +118,12 @@ Output: `installer/out/YassirDiagno-1.0.0-x64.msi` (~80 MB self-contained)
 
 ## ⚖️ License
 
-This project bundles [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) which is licensed under MPL-2.0 + portions under GPL.
-The application itself is the work of **Yassir Mellakh** (2026).
+The application itself is **MIT licensed** — see [LICENSE](LICENSE). Free for any use, commercial or personal.
 
-For commercial distribution, the GPL-bound LibreHardwareMonitor portions will be replaced with a compatible alternative (planned).
+This project depends on [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) (MPL-2.0).
+MPL-2.0 is a file-level copyleft license — it allows commercial closed-source distribution as long as modifications to LHM source files themselves stay MPL. Our own application code can have any license.
+
+**Trademark**: "Yassir Diagno" name and logo are reserved by Yassir Mellakh. Forks may distribute the source code but must rename if distributing as a product.
 
 ---
 

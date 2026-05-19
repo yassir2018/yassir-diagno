@@ -25,8 +25,11 @@ SOFTWARE.
 NOTE ON THIRD-PARTY COMPONENTS:
 
 This software references LibreHardwareMonitorLib (https://github.com/LibreHardwareMonitor/LibreHardwareMonitor)
-which is licensed under the Mozilla Public License 2.0 with portions under the
-GNU General Public License v3.0. See that project's LICENSE for full terms.
+which is licensed under the Mozilla Public License 2.0 (MPL-2.0). MPL-2.0 is
+a file-level copyleft license that requires modifications to LHM source files
+to remain MPL, but does not impose copyleft on the using application's code.
+See that project's LICENSE for full terms.
 
-When distributing this software, you must comply with the licensing terms
-of all bundled third-party components.
+When distributing this software, comply with the licensing terms of bundled
+third-party components (notably the obligation to provide source of modified
+MPL files if you modify them).

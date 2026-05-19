@@ -12,6 +12,7 @@ public partial class SettingsPageViewModel : ViewModelBase
     private readonly IThemeService _theme;
     private readonly IAutoStartService _autoStart;
     private readonly ICsvLoggingService _logging;
+    private readonly IUpdateCheckService _updates;
 
     [ObservableProperty] private bool _isDarkTheme;
     [ObservableProperty] private int _pollingIntervalSeconds;
@@ -26,12 +27,20 @@ public partial class SettingsPageViewModel : ViewModelBase
     [ObservableProperty] private int _logRows;
     [ObservableProperty] private string _logSizeFormatted = "0 KB";
 
-    public SettingsPageViewModel(ISettingsService settings, IThemeService theme, IAutoStartService autoStart, ICsvLoggingService logging)
+    [ObservableProperty] private string _currentVersion = "v1.0.0";
+    [ObservableProperty] private string _updateStatus = "Cliquer pour vérifier les mises à jour";
+    [ObservableProperty] private string? _latestVersion;
+    [ObservableProperty] private string? _releaseUrl;
+    [ObservableProperty] private bool _isUpdateAvailable;
+    [ObservableProperty] private bool _isCheckingUpdate;
+
+    public SettingsPageViewModel(ISettingsService settings, IThemeService theme, IAutoStartService autoStart, ICsvLoggingService logging, IUpdateCheckService updates)
     {
         _settings = settings;
         _theme = theme;
         _autoStart = autoStart;
         _logging = logging;
+        _updates = updates;
         _logging.StatusChanged += (_, _) => RefreshLogging();
 
         IsDarkTheme = _theme.Current == AppTheme.Dark;
@@ -40,7 +49,40 @@ public partial class SettingsPageViewModel : ViewModelBase
         StartMinimized = _settings.Current.StartMinimized;
         ShowSparklines = _settings.Current.ShowSparklines;
         NotificationsEnabled = _settings.Current.NotificationsEnabled;
+        CurrentVersion = _updates.CurrentVersion;
         RefreshLogging();
+    }
+
+    [RelayCommand]
+    private async Task CheckForUpdates()
+    {
+        IsCheckingUpdate = true;
+        UpdateStatus = "Vérification en cours...";
+        try
+        {
+            var info = await _updates.CheckAsync();
+            if (info is null)
+            {
+                UpdateStatus = "Impossible de vérifier (réseau ou GitHub indisponible)";
+                return;
+            }
+            LatestVersion = info.LatestVersion;
+            ReleaseUrl = info.ReleaseUrl;
+            IsUpdateAvailable = info.IsUpdateAvailable;
+            UpdateStatus = info.IsUpdateAvailable
+                ? $"🎉 Nouvelle version {info.LatestVersion} disponible (actuelle: {info.CurrentVersion})"
+                : $"✓ Vous avez la dernière version ({info.CurrentVersion})";
+        }
+        catch (Exception ex) { UpdateStatus = $"Erreur: {ex.Message}"; }
+        finally { IsCheckingUpdate = false; }
+    }
+
+    [RelayCommand]
+    private void OpenReleaseUrl()
+    {
+        if (string.IsNullOrEmpty(ReleaseUrl)) return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(ReleaseUrl) { UseShellExecute = true }); }
+        catch { }
     }
 
     partial void OnIsDarkThemeChanged(bool value)
